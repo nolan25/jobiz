@@ -53,6 +53,10 @@ class JobCategory
     {
         return $this->jobs;
     }
+    public function __toString(): string
+{
+    return $this->name;
+}
 
     public function addJob(Job $job): static
     {

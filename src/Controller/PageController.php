@@ -52,30 +52,34 @@ public function jobList(JobRepository $jobRepository, JobCategoryRepository $cat
 }
 
 #[Route('/jobs/{id}', name: 'job_detail')]
-public function jobDetail(Job $job, Request $request, EntityManagerInterface $entityManager): Response
+public function jobDetail(Request $request, Job $job, EntityManagerInterface $em): Response
 {
-    $application = new JobApplication();
+    // Créer un formulaire de postulation UNIQUEMENT si l'utilisateur est connecté
+    $applicationForm = null;
 
-    $form = $this->createForm(JobApplicationType::class, $application);
-    $form->handleRequest($request);
+    if ($this->getUser()) {
+        $jobApplication = new JobApplication();
+        $jobApplication->setJob($job);
+        $jobApplication->setApplicant($this->getUser());
+        $jobApplication->setCreatedAt(new \DateTimeImmutable());
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        // On complète l'objet
-        $application->setJob($job);
-        $application->setApplicant($this->getUser()); // tu as appelé le champ "applicant"
-        $application->setCreatedAt(new \DateTimeImmutable());
+        $applicationForm = $this->createForm(JobApplicationType::class, $jobApplication);
+        $applicationForm->handleRequest($request);
 
-        $entityManager->persist($application);
-        $entityManager->flush();
+        if ($applicationForm->isSubmitted() && $applicationForm->isValid()) {
+            $em->persist($jobApplication);
+            $em->flush();
 
-        $this->addFlash('success', 'Votre candidature a été envoyée avec succès !');
+            $this->addFlash('success', 'Votre candidature a été envoyée avec succès !');
 
-        return $this->redirectToRoute('job_detail', ['id' => $job->getId()]);
+            return $this->redirectToRoute('job_detail', ['id' => $job->getId()]);
+        }
     }
 
     return $this->render('page/job_detail.html.twig', [
         'job' => $job,
-        'applicationForm' => $form->createView(),
+        'applicationForm' => $applicationForm ? $applicationForm->createView() : null,
     ]);
 }
+
 }

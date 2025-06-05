@@ -78,6 +78,11 @@ class Job
         return $this->description;
     }
 
+    public function __toString()
+    {
+         return $this->title;
+    }
+
     public function setDescription(string $description): static
     {
         $this->description = $description;

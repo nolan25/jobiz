@@ -32,11 +32,11 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Entreprises', 'fas fa-building', Company::class);
-        // yield MenuItem::linkToCrud('Offres d\'emploi', 'fas fa-briefcase', Job::class);
-        // yield MenuItem::linkToCrud('Catégories de jobs', 'fas fa-list', JobCategory::class);
-        // yield MenuItem::linkToCrud('Types de jobs', 'fas fa-tags', JobType::class);
-        // yield MenuItem::linkToCrud('Candidatures', 'fas fa-envelope', JobApplication::class);
-        // yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class);
-        // yield MenuItem::linkToRoute('Retour au site', 'fas fa-arrow-left', 'home');
+        yield MenuItem::linkToCrud('Offres d\'emploi', 'fas fa-briefcase', Job::class);
+        yield MenuItem::linkToCrud('Catégories de jobs', 'fas fa-list', JobCategory::class);
+        yield MenuItem::linkToCrud('Types de jobs', 'fas fa-tags', JobType::class);
+        yield MenuItem::linkToCrud('Candidatures', 'fas fa-envelope', JobApplication::class);
+        yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class);
+        yield MenuItem::linkToRoute('Retour au site', 'fas fa-arrow-left', 'home');
     }
 }

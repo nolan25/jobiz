@@ -1,5 +1,5 @@
-{% extends 'base.html.twig' %} {% block title %}Liste des offres{% endblock %}
-{% block body %}
+{% extends 'base.html.twig' %} {% block title %}{{ job.title }} - Détail de
+l'offre{% endblock %} {% block body %}
 <section class="text-gray-600 body-font">
     <div
         class="container px-5 py-24 mx-auto flex flex-wrap shadow-lg rounded-lg p-8"
@@ -21,12 +21,36 @@
                 </li>
                 <li><strong>Salaire :</strong> {{ job.salaryRange }}</li>
             </ul>
-            <a
-                href="#"
+
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <h3 class="text-2xl font-semibold text-teal-600 mb-4">
+                Postuler à cette offre
+            </h3>
+
+            {{ form_start(applicationForm) }}
+            <div class="mb-4">
+                {{ form_label(applicationForm.coverLetter, null, {'label_attr': {'class': 'block text-gray-700 mb-2'
+                }}) }}
+                {{ form_widget(applicationForm.coverLetter, {'attr': {'class': 'w-full px-3 py-2 border rounded'
+                }}) }}
+                {{ form_errors(applicationForm.coverLetter) }}
+            </div>
+
+            <button
+                type="submit"
                 class="inline-flex text-white bg-teal-600 hover:bg-teal-800 font-semibold py-2 px-6 rounded"
             >
-                Postuler
+                Envoyer ma candidature
+            </button>
+            {{ form_end(applicationForm) }}
+            {% else %}
+            <a
+                href="{{ path('app_login') }}"
+                class="inline-flex text-white bg-teal-600 hover:bg-teal-800 font-semibold py-2 px-6 rounded"
+            >
+                Connectez-vous pour postuler
             </a>
+            {% endif %}
         </div>
     </div>
 </section>

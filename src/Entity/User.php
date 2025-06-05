@@ -62,6 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+   
     /**
      * A visual identifier that represents this user.
      *
@@ -84,6 +85,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+   public function __toString(): string
+{
+    return (string) $this->email;
+}
     /**
      * @param list<string> $roles
      */
