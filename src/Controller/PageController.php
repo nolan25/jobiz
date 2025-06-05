@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Job;
+use App\Entity\JobApplication;
+use App\Form\JobApplicationType;
 use App\Repository\JobRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\JobCategoryRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -49,10 +52,30 @@ public function jobList(JobRepository $jobRepository, JobCategoryRepository $cat
 }
 
 #[Route('/jobs/{id}', name: 'job_detail')]
-public function jobDetail(Job $job): Response
+public function jobDetail(Job $job, Request $request, EntityManagerInterface $entityManager): Response
 {
+    $application = new JobApplication();
+
+    $form = $this->createForm(JobApplicationType::class, $application);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // On complète l'objet
+        $application->setJob($job);
+        $application->setApplicant($this->getUser()); // tu as appelé le champ "applicant"
+        $application->setCreatedAt(new \DateTimeImmutable());
+
+        $entityManager->persist($application);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre candidature a été envoyée avec succès !');
+
+        return $this->redirectToRoute('job_detail', ['id' => $job->getId()]);
+    }
+
     return $this->render('page/job_detail.html.twig', [
         'job' => $job,
+        'applicationForm' => $form->createView(),
     ]);
 }
 }

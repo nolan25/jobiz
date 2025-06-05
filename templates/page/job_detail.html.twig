@@ -1,7 +1,15 @@
-<h1>{{ job.title }}</h1>
-<p>{{ job.description }}</p>
-<p>Ville : {{ job.city }}</p>
-<p>Entreprise : {{ job.company.name }}</p>
-<p>Type : {{ job.jobType.name }}</p>
-<p>Remote : {{ job.remoteAllowed ? "Oui" : "Non" }}</p>
-<p>Salaire : {{ job.salaryRange }}</p>
+<h2>Postuler à cette offre</h2>
+
+{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+
+{{ form_start(applicationForm) }}
+{{ form_row(applicationForm.coverLetter) }}
+<button type="submit">Envoyer ma candidature</button>
+{{ form_end(applicationForm) }}
+
+{% else %}
+<p>
+    Vous devez <a href="{{ path('app_login') }}">vous connecter</a> pour
+    postuler.
+</p>
+{% endif %}
