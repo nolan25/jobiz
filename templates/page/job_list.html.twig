@@ -1,4 +1,16 @@
 <h1>Liste des offres</h1>
+
+<div>
+    <strong>Catégories :</strong>
+    {% for cat in categories %}
+    <a href="{{ path('job_list', { category: cat.id }) }}">
+        {{ cat.name }}
+    </a>
+    {% endfor %}
+</div>
+
+<hr />
+
 <ul>
     {% for job in jobs %}
     <li>

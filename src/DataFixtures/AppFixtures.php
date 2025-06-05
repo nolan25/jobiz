@@ -17,46 +17,80 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        // Créer des JobCategories
-        $category = new JobCategory();
-        $category->setName('Développement Web');
-        $manager->persist($category);
+        // Créer JobCategories
+        $categories = [];
 
-        // Créer des JobTypes
-        $jobType = new JobType();
-        $jobType->setName('Temps plein');
-        $manager->persist($jobType);
+        $catNames = ['Développement Web', 'Cybersecurité', 'Réseaux'];
 
-        // Créer une Company
-        $company = new Company();
-        $company->setName('OpenAI Corp');
-        $company->setDescription('Entreprise innovante en IA');
-        $company->setAdress('123 Avenue des Sciences');
-        $company->setCountry('France');
-        $company->setCity('Paris');
-        $manager->persist($company);
+        foreach ($catNames as $name) {
+            $category = new JobCategory();
+            $category->setName($name);
+            $manager->persist($category);
+            $categories[] = $category;
+        }
 
-        // Créer un User admin
-        $user = new User();
-        $user->setEmail('admin@jobiz.fr');
-        $hashedPassword = $this->passwordHasher->hashPassword($user, 'admin123');
-        $user->setPassword($hashedPassword);
-        $user->setRoles(['ROLE_ADMIN']);
-        $manager->persist($user);
+        // Créer JobTypes
+        $jobTypes = [];
 
-        // Créer un Job
-        $job = new Job();
-        $job->setTitle('Développeur Symfony');
-        $job->setDescription('Nous recherchons un développeur Symfony motivé !');
-        $job->setCity('Paris');
-        $job->setRemoteAllowed(true);
-        $job->setSalaryRange('45k-55k');
-        $job->setCompany($company);
-        $job->setJobType($jobType);
-        $job->addCategory($category);
-        $manager->persist($job);
+        $typeNames = ['Temps plein', 'Alternance', 'Freelance'];
 
-        // On flush toutes les entités
+        foreach ($typeNames as $name) {
+            $jobType = new JobType();
+            $jobType->setName($name);
+            $manager->persist($jobType);
+            $jobTypes[] = $jobType;
+        }
+
+        // Créer Companies
+        $companies = [];
+
+        for ($i = 1; $i <= 3; $i++) {
+            $company = new Company();
+            $company->setName('Company '.$i);
+            $company->setDescription('Description de Company '.$i);
+            $company->setAdress('Adresse '.$i);
+            $company->setCountry('France');
+            $company->setCity('Paris');
+            $manager->persist($company);
+            $companies[] = $company;
+        }
+
+        // Créer Users
+        $admin = new User();
+        $admin->setEmail('admin@jobiz.fr');
+        $admin->setPassword($this->passwordHasher->hashPassword($admin, 'admin123'));
+        $admin->setRoles(['ROLE_ADMIN']);
+        $manager->persist($admin);
+
+        for ($i = 1; $i <= 2; $i++) {
+            $user = new User();
+            $user->setEmail('user'.$i.'@jobiz.fr');
+            $user->setPassword($this->passwordHasher->hashPassword($user, 'user123'));
+            $user->setRoles(['ROLE_USER']);
+            $manager->persist($user);
+        }
+
+        // Créer Jobs
+        for ($i = 1; $i <= 3; $i++) {
+            $job = new Job();
+            $job->setTitle('Offre '.$i.' - Développeur Symfony');
+            $job->setDescription('Description de l\'offre '.$i);
+            $job->setCity('Paris');
+            $job->setRemoteAllowed($i % 2 === 0);
+            $job->setSalaryRange('40k-50k');
+            $job->setCompany($companies[array_rand($companies)]);
+            $job->setJobType($jobTypes[array_rand($jobTypes)]);
+
+            // Ajouter 1 ou plusieurs catégories aléatoirement
+            shuffle($categories);
+            $job->addCategory($categories[0]);
+            if ($i % 2 === 0) {
+                $job->addCategory($categories[1]);
+            }
+
+            $manager->persist($job);
+        }
+
         $manager->flush();
     }
 }
