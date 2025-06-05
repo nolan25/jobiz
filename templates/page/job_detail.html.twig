@@ -1,7 +1,26 @@
-<h1>{{ job.title }}</h1>
-<p>{{ job.description }}</p>
-<p>Ville : {{ job.city }}</p>
-<p>Entreprise : {{ job.company.name }}</p>
-<p>Type : {{ job.jobType.name }}</p>
-<p>Remote : {{ job.remoteAllowed ? "Oui" : "Non" }}</p>
-<p>Salaire : {{ job.salaryRange }}</p>
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des offres{% endblock %}
+
+{% block body %}
+<section class="text-gray-600 body-font">
+  <div class="container px-5 py-24 mx-auto flex flex-wrap shadow-lg rounded-lg p-8">
+    <div class="md:w-2/5 mb-6 md:mb-0">
+      <h2 class="text-3xl font-bold text-teal-600 mb-4">{{ job.title }}</h2>
+      <p class="text-gray-700 mb-4">{{ job.description }}</p>
+    </div>
+    <div class="md:w-3/5 md:pl-6">
+      <ul class="text-gray-800 space-y-3 mb-6">
+        <li><strong>Ville :</strong> {{ job.city }}</li>
+        <li><strong>Entreprise :</strong> {{ job.company.name }}</li>
+        <li><strong>Type :</strong> {{ job.jobType.name }}</li>
+        <li><strong>Remote :</strong> {{ job.remoteAllowed ? "Oui" : "Non" }}</li>
+        <li><strong>Salaire :</strong> {{ job.salaryRange }}</li>
+      </ul>
+      <a href="#" class="inline-flex text-white bg-teal-600 hover:bg-teal-800 font-semibold py-2 px-6 rounded">
+        Postuler
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
