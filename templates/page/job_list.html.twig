@@ -1,0 +1,12 @@
+<h1>Liste des offres</h1>
+<ul>
+    {% for job in jobs %}
+    <li>
+        <a href="{{ path('job_detail', { id: job.id }) }}">
+            {{ job.title }} - {{ job.city }}
+        </a>
+    </li>
+    {% else %}
+    <li>Aucune offre pour le moment.</li>
+    {% endfor %}
+</ul>
